@@ -1,1 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaurav — AI Builder</title>
 
+<!-- These two lines load fonts from Google Fonts.
+     Sora = used for big headings.
+     Inter = used for normal reading text.
+     JetBrains Mono = used only for the small tag labels, like [STATUS: LEARNING]. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- 1. COLOR VARIABLES ----------
+     Defining colors once here means we can reuse them everywhere below
+     just by writing var(--name) instead of typing the hex code again. */
+  :root {
+    --bg: #F6F8FA;
+    --surface: #FFFFFF;
+    --ink: #17212B;
+    --body-text: #4B5B6B;
+    --border: #E1E6EB;
+    --blue: #2E6F9E;
+    --blue-tint: #E9F2F8;
+    --teal: #2E7D6B;
+    --teal-tint: #E8F4F1;
+  }
+
+  /* ---------- 2. RESET & BASE ----------
+     Browsers add their own default spacing to elements.
+     This removes that so we start from a clean, predictable slate. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--body-text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- 3. TAG LABEL (signature detail) ----------
+     Small monospace pills used a few times across the page,
+     styled a bit like a review-queue status tag. */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--blue-tint);
+    color: var(--blue);
+  }
+  .tag.teal { background: var(--teal-tint); color: var(--teal); }
+
+  /* ---------- 4. HEADER ---------- */
+  header {
+    padding: 96px 0 56px;
+    border-bottom: 1px solid var(--border);
+  }
+  header .tag { margin-bottom: 20px; }
+  h1 {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 56px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  header p.role {
+    margin-top: 10px;
+    font-size: 18px;
+    color: var(--blue);
+    font-weight: 500;
+  }
+
+  /* ---------- 5. SECTIONS (shared spacing rule) ---------- */
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+
+  h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  section.intro p {
+    font-size: 17px;
+    max-width: 620px;
+  }
+
+  /* ---------- 6. SKILLS GRID ----------
+     "grid" lets us line boxes up in columns automatically.
+     auto-fit + minmax means it reflows to fewer columns on small screens
+     without us needing to write extra rules for every screen size. */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .skill-card .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background: var(--teal-tint);
+    color: var(--teal);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .skill-card h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .skill-card p {
+    font-size: 14px;
+    color: var(--body-text);
+  }
+
+  /* ---------- 7. PROJECTS (empty queue card) ---------- */
+  .queue-card {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+  }
+  .queue-card p {
+    margin-top: 10px;
+    font-size: 15px;
+  }
+
+  /* ---------- 8. CONTACT LINKS ---------- */
+  .contact-links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .contact-links a {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 12px 22px;
+    border-radius: 8px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .contact-links a:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  footer {
+    padding: 40px 0 60px;
+    font-size: 13px;
+    color: #8B97A3;
+  }
+
+  /* ---------- 9. MOBILE ADJUSTMENTS ----------
+     Below 600px screen width (most phones), shrink the big
+     heading so it doesn't overflow the screen. */
+  @media (max-width: 600px) {
+    header { padding: 64px 0 40px; }
+    h1 { font-size: 38px; }
+    section { padding: 40px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ===== 1. HEADER ===== -->
+  <header>
+    <span class="tag">STATUS: BUILDING</span>
+    <h1>Gaurav</h1>
+    <p class="role">Trust &amp; Safety Specialist → AI Builder</p>
+  </header>
+
+  <!-- ===== 2. INTRO ===== -->
+  <section class="intro">
+    <h2>About</h2>
+    <p>
+      I currently work in content moderation, AI evaluation, and Trust &amp; Safety
+      at TELUS International, where I review and quality-check content at scale.
+      I'm now learning to build AI-powered tools, automations, and applications —
+      turning the judgment I've built reviewing AI output into the skill of building it.
+    </p>
+  </section>
+
+  <!-- ===== 3. SKILLS ===== -->
+  <section class="skills">
+    <h2>Skills</h2>
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <span class="check">✓</span>
+        <h3>AI tools</h3>
+        <p>Claude, ChatGPT</p>
+      </div>
+
+      <div class="skill-card">
+        <span class="check">✓</span>
+        <h3>Web building</h3>
+        <p>HTML &amp; CSS fundamentals</p>
+      </div>
+
+      <div class="skill-card">
+        <span class="check">✓</span>
+        <h3>AI automation</h3>
+        <p>Building workflows and tools</p>
+      </div>
+
+      <div class="skill-card">
+        <span class="check">✓</span>
+        <h3>Content quality &amp; evaluation</h3>
+        <p>1+ year reviewing content and enforcing policy at scale</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== 4. PROJECTS ===== -->
+  <section class="projects">
+    <h2>Projects</h2>
+    <div class="queue-card">
+      <span class="tag teal">QUEUE: EMPTY</span>
+      <p>Coming soon — first project in progress.</p>
+    </div>
+  </section>
+
+  <!-- ===== 5. CONTACT ===== -->
+  <section class="contact">
+    <h2>Contact</h2>
+    <div class="contact-links">
+      <a href="https://github.com/yourusername" target="_blank">GitHub ↗</a>
+      <a href="https://linkedin.com/in/yourusername" target="_blank">LinkedIn ↗</a>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Gaurav. Built while learning to code.
+  </footer>
+
+</div>
+
+</body>
+</html>
