@@ -205,3 +205,242 @@
   .decision-badge.safe{background:var(--safe-bg);color:var(--safe);}
   .decision-badge.review{background:var(--review-bg);color:var(--review);}
   .decision-badge .dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+
+  .reasoning-label{
+    font-size:11.5px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-secondary);
+    margin:0 0 8px;
+  }
+  .reasoning-text{
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--text-primary);
+    margin:0 0 20px;
+  }
+
+  .meta-row{
+    display:flex;
+    align-items:center;
+    gap:24px;
+    border-top:1px solid var(--border-soft);
+    padding-top:16px;
+    flex-wrap:wrap;
+  }
+
+  .meta-item{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .meta-item .k{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--text-muted);
+  }
+  .meta-item .v{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    font-weight:500;
+  }
+  .conf-High{color:var(--safe);}
+  .conf-Medium{color:var(--review);}
+  .conf-Low{color:var(--spam);}
+
+  footer{
+    text-align:center;
+    margin-top:44px;
+    font-size:12.5px;
+    color:var(--text-muted);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  footer span{color:var(--text-secondary);}
+
+  @media (max-width:520px){
+    .row-bottom{flex-direction:column;align-items:stretch;}
+    button#analyzeBtn{justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L3 6.5V12C3 17 6.8 21.4 12 22.5C17.2 21.4 21 17 21 12V6.5L12 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M8.5 12.2L10.8 14.5L15.5 9.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="title-block">
+      <h1>Signal</h1>
+      <p>content moderation triage assistant</p>
+    </div>
+  </header>
+
+  <div class="panel">
+    <label class="field-label" for="contentInput">Content to review</label>
+    <textarea id="contentInput" placeholder="Paste the post, comment, or message you want to check…"></textarea>
+    <div class="row-bottom">
+      <span class="char-count" id="charCount">0 characters</span>
+      <button id="analyzeBtn">Analyze for Spam</button>
+    </div>
+  </div>
+
+  <div id="resultPanel">
+    <div class="result-card">
+      <div class="signal-bar" id="signalBar"></div>
+      <div class="result-body">
+        <div class="result-top">
+          <span class="case-id" id="caseId">CASE-0001</span>
+          <span class="decision-badge" id="decisionBadge"><span class="dot"></span><span id="decisionText">—</span></span>
+        </div>
+        <p class="reasoning-label">Reasoning</p>
+        <p class="reasoning-text" id="reasoningText">—</p>
+        <div class="meta-row">
+          <div class="meta-item">
+            <span class="k">Confidence</span>
+            <span class="v" id="confidenceText">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="k">Length</span>
+            <span class="v" id="lengthText">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Built by <span>Gaurav</span> · Signal moderation assistant</footer>
+</div>
+
+<script>
+  const textarea = document.getElementById('contentInput');
+  const charCount = document.getElementById('charCount');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const resultPanel = document.getElementById('resultPanel');
+  const signalBar = document.getElementById('signalBar');
+  const decisionBadge = document.getElementById('decisionBadge');
+  const decisionText = document.getElementById('decisionText');
+  const reasoningText = document.getElementById('reasoningText');
+  const confidenceText = document.getElementById('confidenceText');
+  const lengthText = document.getElementById('lengthText');
+  const caseId = document.getElementById('caseId');
+
+  let caseNumber = 1;
+
+  textarea.addEventListener('input', () => {
+    charCount.textContent = textarea.value.length + ' characters';
+  });
+
+  analyzeBtn.addEventListener('click', analyzeContent);
+
+  function analyzeContent(){
+    const content = textarea.value.trim().toLowerCase();
+
+    if(!content){
+      alert('Paste some content first.');
+      return;
+    }
+
+    resultPanel.style.display = 'none';
+
+    // Moderation logic based on spam patterns
+    let spamScore = 0;
+    let flags = [];
+
+    // Check for excessive punctuation/urgency
+    const exclamationCount = (content.match(/!/g) || []).length;
+    if(exclamationCount > 3){
+      spamScore += 2;
+      flags.push('excessive exclamation marks');
+    }
+
+    // Check for ALL CAPS words (more than 30% of words)
+    const allCapsWords = (content.match(/\b[A-Z]{2,}\b/g) || []).length;
+    const totalWords = content.split(/\s+/).length;
+    if(allCapsWords / totalWords > 0.3){
+      spamScore += 2;
+      flags.push('excessive capitalization');
+    }
+
+    // Check for suspicious keywords
+    const spamKeywords = ['buy now', 'click here', 'limited time', 'act now', 'don\'t miss', 'free money', 'guaranteed', 'exclusive offer', 'buy cheap', 'bit.ly', 'tinyurl', 'link shortener'];
+    spamKeywords.forEach(keyword => {
+      if(content.includes(keyword)){
+        spamScore += 1;
+        flags.push(`detected "${keyword}"`);
+      }
+    });
+
+    // Check for repetitive content
+    const words = content.split(/\s+/);
+    const wordFreq = {};
+    words.forEach(word => {
+      wordFreq[word] = (wordFreq[word] || 0) + 1;
+    });
+    const maxFreq = Math.max(...Object.values(wordFreq));
+    if(maxFreq > 5){
+      spamScore += 1;
+      flags.push('repetitive words detected');
+    }
+
+    // Check for suspicious links
+    if(/bit\.ly|tinyurl|short\.link|goo\.gl/.test(content)){
+      spamScore += 2;
+      flags.push('suspicious shortened URL');
+    }
+
+    // Determine decision
+    let decision, confidence, reasoning;
+
+    if(spamScore >= 5){
+      decision = 'SPAM';
+      confidence = 'High';
+      reasoning = `Multiple spam signals detected: ${flags.slice(0, 2).join(', ')}.`;
+    } else if(spamScore >= 3){
+      decision = 'NEEDS REVIEW';
+      confidence = 'Medium';
+      reasoning = `Some spam indicators present: ${flags.slice(0, 2).join(', ')}. Manual review recommended.`;
+    } else if(spamScore >= 1){
+      decision = 'NEEDS REVIEW';
+      confidence = 'Low';
+      reasoning = `Minor spam signals detected. Likely safe but warrants review.`;
+    } else {
+      decision = 'SAFE';
+      confidence = 'High';
+      reasoning = 'No spam indicators detected. Content appears legitimate.';
+    }
+
+    renderResult({decision, reasoning, confidence}, content);
+  }
+
+  function renderResult(result, originalContent){
+    const decision = result.decision;
+    const confidence = result.confidence;
+    const reasoning = result.reasoning;
+
+    let cls = 'review';
+    if(decision === 'SPAM') cls = 'spam';
+    else if(decision === 'SAFE') cls = 'safe';
+
+    signalBar.className = 'signal-bar ' + cls;
+    decisionBadge.className = 'decision-badge ' + cls;
+    decisionText.textContent = decision;
+    reasoningText.textContent = reasoning;
+    confidenceText.textContent = confidence;
+    confidenceText.className = 'v conf-' + confidence;
+    lengthText.textContent = originalContent.length + ' chars';
+    caseId.textContent = 'CASE-' + String(caseNumber).padStart(4, '0');
+    caseNumber++;
+
+    resultPanel.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
