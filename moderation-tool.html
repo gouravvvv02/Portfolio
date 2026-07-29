@@ -221,6 +221,17 @@
     margin:0 0 20px;
   }
 
+  .flags-box{
+    background:var(--bg-1);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    margin:16px 0;
+    font-size:13px;
+    line-height:1.5;
+    color:var(--text-secondary);
+  }
+
   .meta-row{
     display:flex;
     align-items:center;
@@ -278,7 +289,7 @@
     </div>
     <div class="title-block">
       <h1>Signal</h1>
-      <p>content moderation triage assistant</p>
+      <p>content moderation triage assistant — Powered by Gaurav's Trust & Safety expertise</p>
     </div>
   </header>
 
@@ -301,10 +312,15 @@
         </div>
         <p class="reasoning-label">Reasoning</p>
         <p class="reasoning-text" id="reasoningText">—</p>
+        <div class="flags-box" id="flagsBox"></div>
         <div class="meta-row">
           <div class="meta-item">
             <span class="k">Confidence</span>
             <span class="v" id="confidenceText">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="k">Category</span>
+            <span class="v" id="categoryText">—</span>
           </div>
           <div class="meta-item">
             <span class="k">Length</span>
@@ -315,10 +331,68 @@
     </div>
   </div>
 
-  <footer>Built by <span>Gaurav</span> · Signal moderation assistant</footer>
+  <footer>Built by <span>Gaurav</span> · Signal moderation assistant · Trust & Safety Edition</footer>
 </div>
 
 <script>
+  // ========== YOUR SPAM KEYWORDS DATABASE ==========
+  const spamDatabase = {
+    telegram: ["join telegram", "telegram channel", "dm on telegram", "telegram group", "t.me", "telegram dm", "ping me on telegram", "telegram username", "telegram id", "message on telegram", "telegram link", "telegram chat", "telegram contact", "tg channel", "telegram exclusive", "telegram VIP", "telegram news", "telegram signals", "telegram tips", "telegram alert", "telegram bot", "telegram admin", "telegram owner", "telegram support", "telegram update", "telegram invite", "telegram join link", "telegram public group", "telegram private channel", "telegram paid group", "telegram premium content"],
+    
+    iptv: ["iptv", "m3u", "m3u8", "premium channels", "free streaming", "iptv subscription", "4k iptv", "iptv trial", "iptv service", "live tv streams", "sports package", "ppv streams", "iptv reseller", "firestick iptv", "smart tv iptv", "mag box", "enigma2", "best iptv", "cheap iptv", "iptv playlist", "xtream codes", "vod iptv", "catchup tv", "fhd streams", "stable iptv", "iptv panel", "iptv dashboard", "iptv client", "iptv server", "ott platform", "ott subscription", "live soccer", "live cricket", "live ufc", "live boxing", "all sports pack", "regional channels", "adult iptv", "xxx streams", "18+ channels", "uncensored iptv"],
+    
+    betting: ["bet365", "1xbet", "place your bet", "odds", "sports betting", "betting tips", "sure win", "fixed match", "accumulator bet", "betting exchange", "online casino", "slot machines", "live dealer", "blackjack online", "roulette live", "bet now", "register and get bonus", "high odds", "parlay bet", "betting promo", "deposit bonus", "free bet", "betting agent", "cricket betting", "football odds", "tennis betting", "basketball odds", "horse racing tips", "greyhound betting", "esports betting", "csgo betting", "dota 2 odds", "lol betting", "virtual sports", "betting accumulator", "treble bet", "each way bet", "betting strategy", "betting system", "arbitrage betting", "matched betting", "betting syndicate", "tipster", "betting forum", "betting community"],
+    
+    crypto: ["bitcoin", "btc", "ethereum", "eth", "usdt", "tether", "bnb", "solana", "crypto giveaway", "double your crypto", "free airdrop", "presale token", "moon coin", "pump and dump", "rug pull", "degen", "ape into", "crypto signals", "trading bot", "arbitrage bot", "flash loan", "defi yield", "staking rewards", "passive income crypto", "mining pool", "cloud mining", "hashrate", "mining contract", "investment fund", "hedge fund", "wealth manager", "portfolio growth", "guaranteed returns", "low risk high reward", "x100 profits", "smart contract", "audited token", "presale whitelist", "private sale", "crypto influencer", "pump group", "whale alerts", "buy the dip"],
+    
+    loan: ["instant loan", "urgent loan", "cash advance", "quick cash", "no credit check", "guaranteed approval", "payday loan", "personal loan", "business loan", "emergency loan", "loan offer", "apply for loan", "get funded", "loan agent", "debt consolidation", "bad credit loan", "same day loan", "low interest loan", "loan forgiveness", "student loan relief"],
+    
+    giveaway: ["free giveaway", "win iphone", "win macbook", "free laptop", "free gift card", "free amazon card", "free steam card", "free netflix", "free spotify", "free disney plus", "free paypal", "free crypto", "free money", "free cash", "claim your prize", "you won", "congratulations winner", "limited stock", "exclusive offer", "secret link", "unlock now"],
+    
+    phishing: ["verify your account", "confirm identity", "update payment", "security alert", "suspicious activity", "login attempt", "reset password", "click to verify", "urgent action required", "account suspended", "account locked", "reactivate account", "kyc verification", "id verification", "selfie verification", "bank details", "credit card info", "ssn", "social security", "passport scan", "driver license", "utility bill", "proof of address"],
+    
+    adult: ["cam girl", "live sex", "adult chat", "nsfw content", "onlyfans free", "onlyfans leak", "private show", "video call sex", "sexting", "nudes", "hookup now", "dating site", "casual encounter", "adult dating", "horny", "sex chat", "xxx video", "porn", "uncensored", "escort service", "massage parlor", "adult service"],
+    
+    workfromhome: ["work from home", "online job", "earn daily", "part time job", "data entry work", "copy paste job", "typing job", "online survey", "paid tasks", "micro job", "freelance opportunity", "instant payment", "daily payout", "referral income", "recruitment drive", "hiring now", "urgent vacancy", "work visa", "overseas job", "high salary", "free accommodation"],
+    
+    counterfeit: ["replica watches", "fake shoes", "knockoff bags", "counterfeit money", "fake ids", "fake passport", "driving license", "university degree", "fake diploma", "falsified documents", "undetectable counterfeit", "grade changer"],
+    
+    leetspeak: ["j0in", "t3l3gram", "dm m3", "fr33", "str3am", "pr3mium", "ch4nn3l", "b3t", "0dds", "c4s1n0", "sl0t", "b0nus", "gu4r4nt33d", "pr0f1t", "w1thdr4w", "v1p", "4cc3ss", "l1nk", "s3rv1c3", "p4ck4g3", "subscr1b3", "t0d4y", "w1n", "g1v3aw4y", "cl41m", "n0w", "4uth3nt1c", "crypt0", "b1tc01n", "eth3r3um", "st4k1ng", "y13ld", "l0an", "c4sh", "fr33 m0n3y", "3xclus1v3"],
+    
+    actionlinks: ["click link", "tap link", "visit site", "open url", "bit.ly", "tinyurl", "shorturl", "rebrandly", "ow.ly", "cutly", "is.gd", "rb.gy", "cutt.us", "shorte.st", "join now", "signup today", "register free", "activate now", "watch full", "download here", "get access", "unlock content"]
+  };
+
+  const categoryNames = {
+    telegram: "Telegram/Contact Solicitation",
+    iptv: "IPTV/Illegal Streaming",
+    betting: "Gambling/Betting Sites",
+    crypto: "Crypto/Investment Scams",
+    loan: "Loan Scams",
+    giveaway: "Fake Giveaways",
+    phishing: "Phishing/Identity Theft",
+    adult: "Adult/NSFW Content",
+    workfromhome: "Work-from-Home Scams",
+    counterfeit: "Counterfeit/Fake Products",
+    leetspeak: "Obfuscated Text",
+    actionlinks: "Suspicious Links"
+  };
+
+  const categoryWeights = {
+    telegram: 1,
+    iptv: 1.5,
+    betting: 1.5,
+    crypto: 2,
+    loan: 2,
+    giveaway: 1.5,
+    phishing: 3,
+    adult: 1.5,
+    workfromhome: 1.5,
+    counterfeit: 2,
+    leetspeak: 0.5,
+    actionlinks: 0.5
+  };
+
+  // ========== DOM ELEMENTS ==========
   const textarea = document.getElementById('contentInput');
   const charCount = document.getElementById('charCount');
   const analyzeBtn = document.getElementById('analyzeBtn');
@@ -327,7 +401,9 @@
   const decisionBadge = document.getElementById('decisionBadge');
   const decisionText = document.getElementById('decisionText');
   const reasoningText = document.getElementById('reasoningText');
+  const flagsBox = document.getElementById('flagsBox');
   const confidenceText = document.getElementById('confidenceText');
+  const categoryText = document.getElementById('categoryText');
   const lengthText = document.getElementById('lengthText');
   const caseId = document.getElementById('caseId');
 
@@ -349,80 +425,63 @@
 
     resultPanel.style.display = 'none';
 
-    // Moderation logic based on spam patterns
-    let spamScore = 0;
-    let flags = [];
+    let totalScore = 0;
+    let detectedCategories = [];
+    let allFlags = [];
 
-    // Check for excessive punctuation/urgency
-    const exclamationCount = (content.match(/!/g) || []).length;
-    if(exclamationCount > 3){
-      spamScore += 2;
-      flags.push('excessive exclamation marks');
-    }
+    // Check each category
+    for(let category in spamDatabase){
+      let categoryScore = 0;
+      let categoryFlags = [];
 
-    // Check for ALL CAPS words (more than 30% of words)
-    const allCapsWords = (content.match(/\b[A-Z]{2,}\b/g) || []).length;
-    const totalWords = content.split(/\s+/).length;
-    if(allCapsWords / totalWords > 0.3){
-      spamScore += 2;
-      flags.push('excessive capitalization');
-    }
+      spamDatabase[category].forEach(keyword => {
+        if(content.includes(keyword)){
+          categoryScore += categoryWeights[category];
+          categoryFlags.push(keyword);
+        }
+      });
 
-    // Check for suspicious keywords
-    const spamKeywords = ['buy now', 'click here', 'limited time', 'act now', 'don\'t miss', 'free money', 'guaranteed', 'exclusive offer', 'buy cheap', 'bit.ly', 'tinyurl', 'link shortener'];
-    spamKeywords.forEach(keyword => {
-      if(content.includes(keyword)){
-        spamScore += 1;
-        flags.push(`detected "${keyword}"`);
+      if(categoryScore > 0){
+        detectedCategories.push({category, score: categoryScore, flags: categoryFlags});
+        totalScore += categoryScore;
+        allFlags = allFlags.concat(categoryFlags.slice(0, 2));
       }
-    });
-
-    // Check for repetitive content
-    const words = content.split(/\s+/);
-    const wordFreq = {};
-    words.forEach(word => {
-      wordFreq[word] = (wordFreq[word] || 0) + 1;
-    });
-    const maxFreq = Math.max(...Object.values(wordFreq));
-    if(maxFreq > 5){
-      spamScore += 1;
-      flags.push('repetitive words detected');
-    }
-
-    // Check for suspicious links
-    if(/bit\.ly|tinyurl|short\.link|goo\.gl/.test(content)){
-      spamScore += 2;
-      flags.push('suspicious shortened URL');
     }
 
     // Determine decision
-    let decision, confidence, reasoning;
+    let decision, confidence, reasoning, topCategory;
 
-    if(spamScore >= 5){
+    if(totalScore >= 4){
       decision = 'SPAM';
       confidence = 'High';
-      reasoning = `Multiple spam signals detected: ${flags.slice(0, 2).join(', ')}.`;
-    } else if(spamScore >= 3){
+      topCategory = detectedCategories.sort((a,b) => b.score - a.score)[0];
+      reasoning = `Multiple critical spam signals detected from ${categoryNames[topCategory.category]}. This content poses a Trust & Safety risk.`;
+    } else if(totalScore >= 2){
       decision = 'NEEDS REVIEW';
       confidence = 'Medium';
-      reasoning = `Some spam indicators present: ${flags.slice(0, 2).join(', ')}. Manual review recommended.`;
-    } else if(spamScore >= 1){
+      topCategory = detectedCategories.sort((a,b) => b.score - a.score)[0];
+      reasoning = `Moderate spam indicators detected. Content requires manual review for policy compliance.`;
+    } else if(totalScore >= 0.5){
       decision = 'NEEDS REVIEW';
       confidence = 'Low';
-      reasoning = `Minor spam signals detected. Likely safe but warrants review.`;
+      topCategory = detectedCategories.sort((a,b) => b.score - a.score)[0];
+      reasoning = `Minor spam signals present. Likely safe but warrants review.`;
     } else {
       decision = 'SAFE';
       confidence = 'High';
-      reasoning = 'No spam indicators detected. Content appears legitimate.';
+      reasoning = 'No spam indicators detected. Content appears legitimate and safe.';
+      topCategory = null;
     }
 
-    renderResult({decision, reasoning, confidence}, content);
+    renderResult({decision, reasoning, confidence, topCategory, allFlags, detectedCategories}, content);
   }
 
   function renderResult(result, originalContent){
     const decision = result.decision;
     const confidence = result.confidence;
     const reasoning = result.reasoning;
+    const topCategory = result.topCategory;
+    const allFlags = result.allFlags;
 
     let cls = 'review';
     if(decision === 'SPAM') cls = 'spam';
@@ -435,6 +494,20 @@
     confidenceText.textContent = confidence;
     confidenceText.className = 'v conf-' + confidence;
     lengthText.textContent = originalContent.length + ' chars';
+    
+    if(topCategory){
+      categoryText.textContent = categoryNames[topCategory.category];
+    } else {
+      categoryText.textContent = 'None';
+    }
+
+    // Show detected flags
+    if(allFlags.length > 0){
+      flagsBox.innerHTML = '<strong>Detected:</strong> ' + allFlags.slice(0, 3).join(', ');
+    } else {
+      flagsBox.innerHTML = '<strong>Flags:</strong> None detected';
+    }
+
     caseId.textContent = 'CASE-' + String(caseNumber).padStart(4, '0');
     caseNumber++;
 
