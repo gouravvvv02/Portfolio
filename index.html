@@ -183,7 +183,135 @@
   /* ---------- 9. MOBILE ADJUSTMENTS ----------
      Below 600px screen width (most phones), shrink the big
      heading so it doesn't overflow the screen. */
-  @media (max-width: 600px) {
+ /* ========== PROJECT CARDS ========== */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .project-header h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 18px;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .project-status {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    background: #E8F4F1;
+    color: var(--teal);
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+
+  .project-description {
+    font-size: 15px;
+    color: var(--ink);
+    margin: 0 0 12px;
+    line-height: 1.6;
+  }
+
+  .project-why {
+    font-size: 14px;
+    color: var(--body-text);
+    margin: 0 0 16px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary, .btn-secondary {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 11px 18px;
+    display: inline-block;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: #2563A8;
+  }
+
+  .btn-secondary {
+    background: var(--blue-tint);
+    color: var(--blue);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover {
+    background: #F0F7FF;
+  }
+
+  .project-how, .project-use {
+    background: var(--bg);
+    border-left: 3px solid var(--blue);
+    padding: 12px 16px;
+    margin: 12px 0;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .project-how p, .project-use p {
+    margin: 0;
+  }
+
+  .case-study-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+
+  .case-study-box h4 {
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    margin: 0 0 16px;
+  }
+
+  .case-study-box p {
+    font-size: 14px;
+    color: var(--body-text);
+    line-height: 1.65;
+    margin: 0 0 12px;
+  }
+
+  .case-study-box p:last-child {
+    margin-bottom: 0;
+  } @media (max-width: 600px) {
     header { padding: 64px 0 40px; }
     h1 { font-size: 38px; }
     section { padding: 40px 0; }
@@ -244,15 +372,46 @@
     </div>
   </section>
 
-  <!-- ===== 4. PROJECTS ===== -->
-<section class="projects">
-  <h2>Projects</h2>
-  <div class="queue-card">
-    <span class="tag teal">QUEUE: 1 ACTIVE</span>
-    <p><a href="moderation-tool.html" style="color: var(--blue); text-decoration: none; font-weight: 500;">Signal — Content Moderation Tool</a></p>
-    <p style="font-size: 13px; color: var(--body-text); margin-top: 8px;">AI-powered tool to identify spam and policy violations using Claude AI and Trust & Safety expertise.</p>
-  </div>
-</section>
+<!-- ===== 4. PROJECTS ===== -->
+  <section class="projects">
+    <h2>Projects</h2>
+    
+    <div class="project-card">
+      <div class="project-header">
+        <h3>Signal — Content Moderation Assistant</h3>
+        <span class="project-status">Live</span>
+      </div>
+      
+      <p class="project-description">
+        An AI-powered content moderation tool that detects spam, phishing, and policy violations across 12 risk categories. Analyzes text instantly and assigns risk decisions (SPAM/SAFE/NEEDS REVIEW) with confidence scores and detailed reasoning.
+      </p>
+      
+      <p class="project-why">
+        Built from 1+ years of content moderation experience at TELUS International. Signal automates the exact spam detection patterns I apply daily—Telegram solicitation, IPTV piracy, gambling spam, crypto scams, phishing, and more.
+      </p>
+      
+      <div class="project-links">
+        <a href="moderation-tool.html" class="btn-primary">Try Signal →</a>
+        <a href="#signal-case-study" class="btn-secondary">Case Study ↓</a>
+      </div>
+      
+      <div class="project-how">
+        <p><strong>How it works:</strong> Paste content → Signal analyzes against 200+ keywords across 12 categories → Returns decision badge, reasoning, detected flags, and confidence level. Works offline, no API keys needed.</p>
+      </div>
+      
+      <div class="project-use">
+        <p><strong>Use cases:</strong> Reddit moderators, community managers, platform Trust & Safety teams, UGC platforms needing fast triage.</p>
+      </div>
+    </div>
+    
+    <div id="signal-case-study" class="case-study-box">
+      <h4>Signal Case Study</h4>
+      <p><strong>What:</strong> AI-powered content moderation tool that instantly detects spam, phishing, and policy violations across 12 risk categories.</p>
+      <p><strong>Why:</strong> With 1+ years of experience in content moderation and Trust & Safety at TELUS International, I identified a gap: manual spam detection is repetitive and pattern-based. I built Signal to automate the exact judgment patterns I apply daily.</p>
+      <p><strong>How:</strong> Uses a rule-based detection system with 200+ keywords organized into semantic categories (Telegram, IPTV, Betting, Crypto, Loans, Phishing, Adult Content, Work-from-Home scams, Counterfeits, and obfuscated text). Calculates risk scores and weights by severity.</p>
+      <p><strong>Impact:</strong> Moderators can paste suspicious content and instantly get structured decisions. Perfect for any platform handling user-generated content.</p>
+    </div>
+  </section>
 
   <!-- ===== 5. CONTACT ===== -->
   <section class="contact">
