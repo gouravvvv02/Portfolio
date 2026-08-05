@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gaurav — AI Builder</title>
 
-<!-- These two lines load fonts from Google Fonts.
-     Sora = used for big headings.
-     Inter = used for normal reading text.
-     JetBrains Mono = used only for the small tag labels, like [STATUS: LEARNING]. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
@@ -343,7 +339,7 @@
       <div class="skill-card">
         <span class="check">✓</span>
         <h3>Content quality &amp; evaluation</h3>
-        <p>2+ year reviewing content and enforcing policy at scale</p>
+        <p>2+ years reviewing content and enforcing policy at scale</p>
       </div>
 
     </div>
@@ -363,7 +359,7 @@
       </p>
       
       <p class="project-why">
-        Built from 1+ years of content moderation experience at TELUS International. Signal automates the exact spam detection patterns I apply daily—Telegram solicitation, IPTV piracy, gambling spam, crypto scams, phishing, and more.
+        Built from 2+ years of content moderation experience at TELUS International. Signal automates the exact spam detection patterns I apply daily—Telegram solicitation, IPTV piracy, gambling spam, crypto scams, phishing, and more.
       </p>
       
       <div class="project-links">
@@ -383,7 +379,7 @@
     <div id="signal-case-study" class="case-study-box">
       <h4>Signal Case Study</h4>
       <p><strong>What:</strong> AI-powered content moderation tool that instantly detects spam, phishing, and policy violations across 12 risk categories.</p>
-      <p><strong>Why:</strong> With 1+ years of experience in content moderation and Trust & Safety at TELUS International, I identified a gap: manual spam detection is repetitive and pattern-based. I built Signal to automate the exact judgment patterns I apply daily.</p>
+      <p><strong>Why:</strong> With 2+ years of experience in content moderation and Trust & Safety at TELUS International, I identified a gap: manual spam detection is repetitive and pattern-based. I built Signal to automate the exact judgment patterns I apply daily.</p>
       <p><strong>How:</strong> Uses a rule-based detection system with 200+ keywords organized into semantic categories (Telegram, IPTV, Betting, Crypto, Loans, Phishing, Adult Content, Work-from-Home scams, Counterfeits, and obfuscated text). Calculates risk scores and weights by severity.</p>
       <p><strong>Impact:</strong> Moderators can paste suspicious content and instantly get structured decisions. Perfect for any platform handling user-generated content.</p>
     </div>
@@ -413,6 +409,42 @@
 
       <div class="project-use">
         <p><strong>Use cases:</strong> Quick policy lookups for moderators, onboarding reference for new Trust & Safety hires, or a live demo of applied LLM integration with proper API key security.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <h3>Escalation Router — Ops Dashboard</h3>
+        <span class="project-status">Live</span>
+      </div>
+
+      <p class="project-description">
+        An AI-powered triage system that automatically classifies incoming tickets by category, severity, and routing team — turning a live queue of raw reports into structured, actionable data, the same judgment calls I make manually every day in escalation review.
+      </p>
+
+      <p class="project-why">
+        Built to go beyond simple AI text responses (like my chatbot) into structured output — where AI's answer directly drives the app's logic: color-coded severity, routing decisions, and persistent record-keeping, mirroring real Trust & Safety ops tooling.
+      </p>
+
+      <div class="project-links">
+        <a href="https://escalation-router-frontend.vercel.app" class="btn-primary" target="_blank">Try the Dashboard →</a>
+        <a href="https://github.com/gouravvvv02/escalation-router-frontend" class="btn-secondary" target="_blank">View Code</a>
+      </div>
+
+      <div class="project-how">
+        <p><strong>How it works:</strong> Submit a ticket → backend sends it to Gemini with a structured-output prompt → AI returns JSON (category, severity, routing team, reasoning) → result is saved to Firestore and instantly rendered on the dashboard with a color-coded severity badge. Tickets persist across sessions, loading automatically on page open.</p>
+      </div>
+
+      <div class="project-use">
+        <p><strong>Features:</strong></p>
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: var(--body-text); line-height: 1.8;">
+          <li>Real-time AI classification into category, severity, and routing team</li>
+          <li>Structured JSON output — AI's response directly drives app behavior, not just displayed text</li>
+          <li>Color-coded severity badges (Low → Critical) for instant visual triage</li>
+          <li>Persistent ticket history via Firebase/Firestore — survives refreshes and new sessions</li>
+          <li>Taxonomy modeled on real content moderation tagging categories from professional Trust & Safety work</li>
+          <li>Secure serverless backend — API key never exposed to the browser</li>
+        </ul>
       </div>
     </div>
   </section>
